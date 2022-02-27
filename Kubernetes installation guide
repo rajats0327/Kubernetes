@@ -1,0 +1,71 @@
+All the commands need to run as a root user.
+
+1. Turn of Swap
+apt-get update
+swapoff -a
+2. Comment swap FS from /etc/fstab
+vi /etc/fstab
+Comment any line that has swap written
+3 Edit /etc/hostname and edit hostname to match the host of your choice
+4 Get private ip address of all hosts
+ip addr
+5 Edit /etc/hosts to add hostname and IP address on all nodes
+vi /etc/hosts
+kmaster 192.168.0.2 -- private IP address from 
+knode1 192.168.0.3 -- private IP address from 
+
+Install kubelet kubeadm and kubectl
+apt-get update && apt-get install -y apt-transporthttps curl
+apt-get update && apt-get install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+
+Install docker
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch=amd64]
+https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) \
+stable"
+
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+
+Configure Cluster using kubeadm
+
+The below steps will be performed ONLY ON MASTER NODE
+ip addr
+kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.56.108
+
+Save the output the below output you get after running kubeadm init
+
+kubeadm join 10.138.0.2:6443 --token 3ccgnq.2owa1scoiqqoqhdq 
+\ --discovery-token-ca-cert-hash 
+sha256:04ff7a9148ae02db8a4be70f016fe66d6d5870ea09641e48f6a7d
+b54747e1acd 
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl create -f https://docs.projectcalico.org/manifests/calico.yaml
+
+
+The below steps will be performed ONLY ON Slave node
+
+Run the kubeadm join command you got it from kubeadm init
+
+kubeadm join 10.138.0.2:6443 --token 3ccgnq.2owa1scoiqqoqhdq 
+\ --discovery-token-ca-cert-hash 
+sha256:04ff7a9148ae02db8a4be70f016fe66d6d5870ea09641e48f6a7d
+b54747e1acd
