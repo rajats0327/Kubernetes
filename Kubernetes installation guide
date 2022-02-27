@@ -51,8 +51,7 @@ Save the output the below output you get after running kubeadm init
 
 kubeadm join 10.138.0.2:6443 --token 3ccgnq.2owa1scoiqqoqhdq 
 \ --discovery-token-ca-cert-hash 
-sha256:04ff7a9148ae02db8a4be70f016fe66d6d5870ea09641e48f6a7d
-b54747e1acd 
+<token> 
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -67,5 +66,4 @@ Run the kubeadm join command you got it from kubeadm init
 
 kubeadm join 10.138.0.2:6443 --token 3ccgnq.2owa1scoiqqoqhdq 
 \ --discovery-token-ca-cert-hash 
-sha256:04ff7a9148ae02db8a4be70f016fe66d6d5870ea09641e48f6a7d
-b54747e1acd
+<token>
