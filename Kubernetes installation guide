@@ -1,3 +1,4 @@
+Run below commands on both master/worker nodes
 All the commands need to run as a root user.
 
 1. Turn of Swap
